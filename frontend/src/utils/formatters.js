@@ -1,0 +1,1 @@
+export const formatTaskProgress = (progress) => `${progress}% completed`;
