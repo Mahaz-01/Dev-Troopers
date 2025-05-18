@@ -1,6 +1,7 @@
 import { api } from './api';
 
 export const chatService = {
-  getMessages: async () => api.get('/chat'),
-  sendMessage: async (messageData) => api.post('/chat', messageData),
+  getChatRooms: async () => api.get('/chat/rooms'),
+  getMessages: async (chatRoomId) => api.get(`/chat/messages/${chatRoomId}`),
+  sendMessage: async (messageData) => api.post('/chat/messages', messageData),
 };
