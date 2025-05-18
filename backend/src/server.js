@@ -7,6 +7,9 @@ const config = require('./config/environment');
 const authRoutes = require('./routes/authRoutes');
 const taskRoutes = require('./routes/taskRoutes');
 const chatRoutes = require('./routes/chatRoutes');
+const userRoutes = require('./routes/userRoutes');
+const reminderRoutes = require('./routes/reminderRoutes');
+const teamRoutes = require('./routes/teamRoutes');
 const ChatRoom = require('./models/ChatRoom');
 const errorHandler = require('./middleware/errorHandler');
 
@@ -15,7 +18,7 @@ const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
     origin: 'http://localhost:3000',
-    methods: ['GET', 'POST']
+    methods: ['GET', 'POST', 'PUT', 'DELETE']
   }
 });
 
@@ -53,6 +56,9 @@ io.on('connection', (socket) => {
 app.use('/auth', authRoutes);
 app.use('/tasks', taskRoutes);
 app.use('/chat', chatRoutes(io));
+app.use('/users', userRoutes);
+app.use('/reminders', reminderRoutes);
+app.use('/teams', teamRoutes);
 
 // Error Handler
 app.use(errorHandler);
