@@ -16,7 +16,6 @@ const Sidebar = () => {
     { name: 'Chat', icon: '💬', path: '/chat' },
     { name: 'Reminders', icon: '⏰', path: '/reminders' },
     { name: 'Team', icon: '👥', path: '/team' },
-    { name: 'Settings', icon: '⚙️', path: '/settings' },
   ];
 
   return (

@@ -337,72 +337,69 @@ const ChatPage = () => {
                 </div>
 
                 {/* Messages Area */}
-                <div className="flex-1 overflow-y-auto bg-gradient-to-b from-gray-50 to-gray-100">
-                  <div className="p-6 space-y-4">
-                    {messages.length === 0 ? (
-                      <div className="flex flex-col items-center justify-center h-full text-center py-12">
-                        <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mb-4">
-                          <svg className="w-10 h-10 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                          </svg>
-                        </div>
-                        <h3 className="text-xl font-semibold text-gray-700 mb-2">No messages yet</h3>
-                        <p className="text-gray-500">Be the first to send a message in this room!</p>
+                <div className="flex-1 overflow-y-auto bg-white p-6">
+                  {messages.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center h-full text-center py-12">
+                      <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                        <svg className="w-10 h-10 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                        </svg>
                       </div>
-                    ) : (
-                      messages.map((message, index) => {
+                      <h3 className="text-xl font-semibold text-gray-700 mb-2">No messages yet</h3>
+                      <p className="text-gray-500">Be the first to send a message in this room!</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {messages.map((message, index) => {
                         const isOwn = message.sender_id === user.id;
                         const showAvatar = index === 0 || messages[index - 1].sender_id !== message.sender_id;
+                        const showName = index === 0 || messages[index - 1].sender_id !== message.sender_id;
                         
                         return (
                           <div key={message.id} className={`flex ${isOwn ? 'justify-end' : 'justify-start'}`}>
-                            <div className={`flex items-end max-w-xs lg:max-w-md xl:max-w-lg ${isOwn ? 'flex-row-reverse' : ''}`}>
-                              {/* Avatar */}
-                              {showAvatar ? (
-                                <div className={`w-8 h-8 rounded-full ${generateUserColor(message.sender_id)} flex items-center justify-center text-white text-sm font-semibold ${isOwn ? 'ml-2' : 'mr-2'}`}>
-                                  {(isOwn ? 'You' : message.sender_name)?.charAt(0).toUpperCase()}
+                            <div className={`flex items-start max-w-xs lg:max-w-md ${isOwn ? 'flex-row-reverse' : ''}`}>
+                              {/* Avatar - only show for received messages */}
+                              {!isOwn && showAvatar && (
+                                <div className={`w-8 h-8 rounded-full ${generateUserColor(message.sender_id)} flex items-center justify-center text-white text-sm font-semibold mr-3 mt-1`}>
+                                  {message.sender_name?.charAt(0).toUpperCase()}
                                 </div>
-                              ) : (
-                                <div className={`w-8 ${isOwn ? 'ml-2' : 'mr-2'}`}></div>
                               )}
                               
-                              {/* Message bubble */}
-                              <div className={`group relative`}>
-                                {showAvatar && (
-                                  <p className={`text-xs text-gray-500 mb-1 ${isOwn ? 'text-right' : 'text-left'}`}>
-                                    {isOwn ? 'You' : message.sender_name}
+                              {/* Message content */}
+                              <div className={`flex flex-col ${isOwn ? 'items-end' : 'items-start'}`}>
+                                {/* Sender name - only for received messages */}
+                                {!isOwn && showName && (
+                                  <p className="text-xs text-gray-500 mb-1 ml-2">
+                                    {message.sender_name}
                                   </p>
                                 )}
-                                <div className={`relative p-3 rounded-2xl shadow-sm ${
+                                
+                                {/* Message bubble */}
+                                <div className={`relative p-3 rounded-2xl max-w-full break-words ${
                                   isOwn
                                     ? 'bg-blue-500 text-white rounded-br-md'
-                                    : 'bg-white text-gray-800 rounded-bl-md border border-gray-200'
-                                } transition-all hover:shadow-md`}>
-                                  <p className="whitespace-pre-wrap break-words">{message.content}</p>
-                                  <div className={`flex items-center justify-end mt-1 space-x-1 ${
+                                    : 'bg-gray-100 text-gray-800 rounded-bl-md'
+                                }`}>
+                                  <p className="whitespace-pre-wrap">{message.content}</p>
+                                  
+                                  {/* Timestamp */}
+                                  <div className={`text-xs mt-1 ${
                                     isOwn ? 'text-blue-100' : 'text-gray-500'
                                   }`}>
-                                    <span className="text-xs">
-                                      {new Date(message.created_at).toLocaleTimeString([], {
-                                        hour: '2-digit',
-                                        minute: '2-digit'
-                                      })}
-                                    </span>
-                                    {isOwn && (
-                                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                                      </svg>
-                                    )}
+                                    {new Date(message.created_at).toLocaleTimeString([], {
+                                      hour: '2-digit',
+                                      minute: '2-digit'
+                                    })}
                                   </div>
                                 </div>
                               </div>
                             </div>
                           </div>
                         );
-                      })
-                    )}
-                    <div ref={messagesEndRef} />
-                  </div>
+                      })}
+                      <div ref={messagesEndRef} />
+                    </div>
+                  )}
                 </div>
 
                 {/* Typing indicator */}
